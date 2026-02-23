@@ -58,6 +58,7 @@ export const createItinerary = async (req, res) => {
 
         // Create itinerary object
         const itineraryData = {
+            user: req.user ? req.user._id : undefined,
             destination,
             travelMonth,
             duration,
@@ -77,6 +78,12 @@ export const createItinerary = async (req, res) => {
         const itinerary = new Itinerary(itineraryData);
         await itinerary.save();
 
+        // If user is logged in, push this itinerary to their saved list
+        if (req.user) {
+            req.user.savedItineraries.push(itinerary._id);
+            await req.user.save();
+        }
+
         res.status(201).json({
             success: true,
             data: itinerary
@@ -86,6 +93,24 @@ export const createItinerary = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Error creating itinerary',
+            error: error.message
+        });
+    }
+};
+
+// Get logged-in user's itineraries
+export const getMyItineraries = async (req, res) => {
+    try {
+        const itineraries = await Itinerary.find({ user: req.user._id }).sort({ createdAt: -1 });
+        res.status(200).json({
+            success: true,
+            data: itineraries
+        });
+    } catch (error) {
+        console.error('Error fetching user itineraries:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching itineraries',
             error: error.message
         });
     }

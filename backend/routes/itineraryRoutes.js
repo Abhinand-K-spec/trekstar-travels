@@ -8,13 +8,16 @@ import {
     removeActivity,
     getPricing,
     getAvailableHotels,
-    getAvailableActivities
+    getAvailableActivities,
+    getMyItineraries
 } from '../controllers/itineraryController.js';
+import { protect, optionalProtect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
 // Itinerary routes
-router.post('/', createItinerary);
+router.post('/', optionalProtect, createItinerary);
+router.get('/my-packages', protect, getMyItineraries);
 router.get('/:id', getItinerary);
 router.put('/:id', updateItinerary);
 

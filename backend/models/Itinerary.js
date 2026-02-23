@@ -7,13 +7,11 @@ const dailyPlanSchema = new mongoose.Schema({
     },
     title: String,
     hotel: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Hotel'
+        type: mongoose.Schema.Types.Mixed
     },
     activities: [{
         activity: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Activity'
+            type: mongoose.Schema.Types.Mixed
         },
         order: Number,
         timeSlot: String

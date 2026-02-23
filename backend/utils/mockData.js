@@ -5,37 +5,43 @@ export const mockDestinations = [
         city: 'Paris',
         country: 'France',
         coordinates: { lat: 48.8566, lng: 2.3522 },
-        image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800'
+        image: 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=2020',
+        description: 'The City of Light - romantic streets, art, and legendary culture'
     },
     {
         city: 'Tokyo',
         country: 'Japan',
         coordinates: { lat: 35.6762, lng: 139.6503 },
-        image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800'
+        image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&q=80&w=2000',
+        description: 'Modern metropolis blending neon-lit tradition and innovation'
     },
     {
         city: 'Bali',
         country: 'Indonesia',
         coordinates: { lat: -8.3405, lng: 115.0920 },
-        image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800'
+        image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&q=80&w=2000',
+        description: 'Tropical paradise with stunning beaches, lush jungles and ancient culture'
     },
     {
         city: 'Dubai',
         country: 'UAE',
         coordinates: { lat: 25.2048, lng: 55.2708 },
-        image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800'
+        image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&q=80&w=2000',
+        description: 'Futuristic city of luxury, desert adventures and world-class architecture'
     },
     {
         city: 'Santorini',
         country: 'Greece',
         coordinates: { lat: 36.3932, lng: 25.4615 },
-        image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=800'
+        image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&q=80&w=2000',
+        description: 'Iconic white buildings and stunning Aegean sunsets'
     },
     {
-        city: 'New York',
-        country: 'USA',
-        coordinates: { lat: 40.7128, lng: -74.0060 },
-        image: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800'
+        city: 'Swiss Alps',
+        country: 'Switzerland',
+        coordinates: { lat: 46.8182, lng: 8.2275 },
+        image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=2000',
+        description: 'Breathtaking mountain vistas and serene alpine landscapes'
     }
 ];
 

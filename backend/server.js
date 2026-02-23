@@ -19,13 +19,10 @@ app.use(express.urlencoded({ extended: true }));
 // MongoDB connection
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.MONGODB_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
-        console.log('✅ MongoDB connected successfully');
+        await mongoose.connect(process.env.MONGODB_URI);
+        console.log(' MongoDB connected successfully');
     } catch (error) {
-        console.error('❌ MongoDB connection error:', error);
+        console.error(' MongoDB connection error:', error);
         process.exit(1);
     }
 };
@@ -33,8 +30,13 @@ const connectDB = async () => {
 // Connect to database
 connectDB();
 
+import authRoutes from './routes/authRoutes.js';
+
+// ... (other imports stay the same)
+
 // API Routes
 app.use('/api/itineraries', itineraryRoutes);
+app.use('/api/auth', authRoutes);
 
 // Trending destinations endpoint
 app.get('/api/destinations/trending', (req, res) => {
@@ -48,7 +50,7 @@ app.get('/api/destinations/trending', (req, res) => {
 app.get('/api/health', (req, res) => {
     res.json({
         success: true,
-        message: 'Travel Planner API is running',
+        message: 'Trekstar Tours and Travels API is running',
         timestamp: new Date().toISOString()
     });
 });
@@ -56,7 +58,7 @@ app.get('/api/health', (req, res) => {
 // Root endpoint
 app.get('/', (req, res) => {
     res.json({
-        message: 'Welcome to Travel Planner API',
+        message: 'Welcome to Trekstar Tours and Travels API',
         version: '1.0.0',
         endpoints: {
             health: '/api/health',
