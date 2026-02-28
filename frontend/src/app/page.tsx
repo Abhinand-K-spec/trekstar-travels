@@ -26,7 +26,7 @@ function FeaturedPackages({ onAuthNeeded, isAuthenticated }: { onAuthNeeded: () 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5050/api';
+    const apiBase = process.env.NEXT_PUBLIC_API_URL!;
     fetch(`${apiBase}/packages?limit=3`)
       .then(r => r.json())
       .then(d => { if (d.success) setPkgs((d.data || []).slice(0, 3)); })

@@ -22,7 +22,7 @@ export default function MyPackagesPage() {
         const fetchItineraries = async () => {
             if (!token) return;
             try {
-                const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5050/api';
+                const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL!;
                 const res = await fetch(`${apiBaseUrl}/itineraries/my-packages`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });

@@ -23,7 +23,7 @@ export default function PackagesPage() {
     const fetchPackages = async (mood = '') => {
         setLoading(true);
         try {
-            const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5050/api';
+            const apiBase = process.env.NEXT_PUBLIC_API_URL!;
             const q = mood ? `?mood=${mood}` : '';
             const res = await fetch(`${apiBase}/packages${q}`);
             const data = await res.json();

@@ -32,7 +32,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         const payload = isLoginView ? { email, password } : { name, email, password };
 
         try {
-            const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5050/api';
+            const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL!;
             const res = await fetch(`${apiBaseUrl}${endpoint}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
