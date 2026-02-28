@@ -16,7 +16,10 @@ class ApiClient {
         options: RequestInit = {}
     ): Promise<ApiResponse<T>> {
         try {
-            const token = localStorage.getItem('token');
+            // Use separate token keys so admin and user sessions don't interfere
+            const isAdminEndpoint = endpoint.startsWith('/admin');
+            const tokenKey = isAdminEndpoint ? 'admin_token' : 'token';
+            const token = typeof window !== 'undefined' ? localStorage.getItem(tokenKey) : null;
             const response = await fetch(`${this.baseUrl}${endpoint}`, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -42,7 +45,8 @@ class ApiClient {
         }
     }
 
-    // Itinerary endpoints
+    // ─── Itinerary endpoints ───────────────────────────────────────────────────
+
     async createItinerary(itineraryData: Partial<Itinerary>): Promise<ApiResponse<Itinerary>> {
         return this.request<Itinerary>('/itineraries', {
             method: 'POST',
@@ -61,34 +65,21 @@ class ApiClient {
         });
     }
 
-    async swapHotel(
-        itineraryId: string,
-        day: number,
-        newHotelData: Hotel
-    ): Promise<ApiResponse<Itinerary>> {
+    async swapHotel(itineraryId: string, day: number, newHotelData: Hotel): Promise<ApiResponse<Itinerary>> {
         return this.request<Itinerary>(`/itineraries/${itineraryId}/swap-hotel`, {
             method: 'POST',
             body: JSON.stringify({ day, newHotelData }),
         });
     }
 
-    async addActivity(
-        itineraryId: string,
-        day: number,
-        activityData: Activity,
-        timeSlot?: string
-    ): Promise<ApiResponse<Itinerary>> {
+    async addActivity(itineraryId: string, day: number, activityData: Activity, timeSlot?: string): Promise<ApiResponse<Itinerary>> {
         return this.request<Itinerary>(`/itineraries/${itineraryId}/add-activity`, {
             method: 'POST',
             body: JSON.stringify({ day, activityData, timeSlot }),
         });
     }
 
-    async removeActivity(
-        itineraryId: string,
-        day: number,
-        activityIndex: number
-    ): Promise<ApiResponse<Itinerary>> {
+    async removeActivity(itineraryId: string, day: number, activityIndex: number): Promise<ApiResponse<Itinerary>> {
         return this.request<Itinerary>(`/itineraries/${itineraryId}/remove-activity`, {
             method: 'POST',
             body: JSON.stringify({ day, activityIndex }),
@@ -99,7 +90,6 @@ class ApiClient {
         return this.request(`/itineraries/${itineraryId}/pricing`);
     }
 
-    // Get available options
     async getAvailableHotels(city: string): Promise<ApiResponse<Hotel[]>> {
         return this.request<Hotel[]>(`/itineraries/hotels/available?city=${encodeURIComponent(city)}`);
     }
@@ -109,14 +99,94 @@ class ApiClient {
         return this.request<Activity[]>(`/itineraries/activities/available?city=${encodeURIComponent(city)}${moodParam}`);
     }
 
-    // Destinations
+    async getMyItineraries(): Promise<ApiResponse<Itinerary[]>> {
+        return this.request<Itinerary[]>('/itineraries/my-packages');
+    }
+
+    // ─── Destinations ──────────────────────────────────────────────────────────
+
     async getTrendingDestinations(): Promise<ApiResponse<Destination[]>> {
         return this.request<Destination[]>('/destinations/trending');
     }
 
-    // Health check
+    // ─── Health check ──────────────────────────────────────────────────────────
+
     async healthCheck(): Promise<ApiResponse<any>> {
         return this.request('/health');
+    }
+
+    // ─── Admin - Dashboard ─────────────────────────────────────────────────────
+
+    async adminGetStats(): Promise<ApiResponse<any>> {
+        return this.request('/admin/stats');
+    }
+
+    // ─── Admin - Users ─────────────────────────────────────────────────────────
+
+    async adminGetUsers(params?: { search?: string; page?: number; limit?: number }): Promise<ApiResponse<any>> {
+        const query = params ? new URLSearchParams(Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined).map(([k, v]) => [k, String(v)]))).toString() : '';
+        return this.request(`/admin/users${query ? `?${query}` : ''}`);
+    }
+
+    async adminGetUser(id: string): Promise<ApiResponse<any>> {
+        return this.request(`/admin/users/${id}`);
+    }
+
+    async adminUpdateUser(id: string, data: any): Promise<ApiResponse<any>> {
+        return this.request(`/admin/users/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+    }
+
+    async adminDeleteUser(id: string): Promise<ApiResponse<any>> {
+        return this.request(`/admin/users/${id}`, { method: 'DELETE' });
+    }
+
+    // ─── Admin - Packages ──────────────────────────────────────────────────────
+
+    async adminGetPackages(params?: { search?: string; page?: number; limit?: number }): Promise<ApiResponse<any>> {
+        const query = params ? new URLSearchParams(Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined).map(([k, v]) => [k, String(v)]))).toString() : '';
+        return this.request(`/admin/packages${query ? `?${query}` : ''}`);
+    }
+
+    async adminGetPackage(id: string): Promise<ApiResponse<any>> {
+        return this.request(`/admin/packages/${id}`);
+    }
+
+    async adminCreatePackage(data: any): Promise<ApiResponse<any>> {
+        return this.request('/admin/packages', { method: 'POST', body: JSON.stringify(data) });
+    }
+
+    async adminUpdatePackage(id: string, data: any): Promise<ApiResponse<any>> {
+        return this.request(`/admin/packages/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+    }
+
+    async adminDeletePackage(id: string): Promise<ApiResponse<any>> {
+        return this.request(`/admin/packages/${id}`, { method: 'DELETE' });
+    }
+
+    // ─── Admin - Orders ────────────────────────────────────────────────────────
+
+    async adminGetOrders(params?: { status?: string; page?: number; limit?: number }): Promise<ApiResponse<any>> {
+        const query = params ? new URLSearchParams(Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined).map(([k, v]) => [k, String(v)]))).toString() : '';
+        return this.request(`/admin/orders${query ? `?${query}` : ''}`);
+    }
+
+    async adminGetOrder(id: string): Promise<ApiResponse<any>> {
+        return this.request(`/admin/orders/${id}`);
+    }
+
+    async adminUpdateOrderStatus(id: string, status: string): Promise<ApiResponse<any>> {
+        return this.request(`/admin/orders/${id}/status`, { method: 'PUT', body: JSON.stringify({ status }) });
+    }
+
+    // ─── Admin - Payments ──────────────────────────────────────────────────────
+
+    async adminGetPayments(params?: { status?: string; page?: number; limit?: number }): Promise<ApiResponse<any>> {
+        const query = params ? new URLSearchParams(Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined).map(([k, v]) => [k, String(v)]))).toString() : '';
+        return this.request(`/admin/payments${query ? `?${query}` : ''}`);
+    }
+
+    async adminGetPayment(id: string): Promise<ApiResponse<any>> {
+        return this.request(`/admin/payments/${id}`);
     }
 }
 

@@ -2,8 +2,8 @@ import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
 
 // Generate JWT
-const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET || 'fallback_secret', {
+const generateToken = (id, role) => {
+    return jwt.sign({ id, role }, process.env.JWT_SECRET || 'fallback_secret', {
         expiresIn: process.env.JWT_EXPIRE || '30d',
     });
 };
@@ -34,7 +34,7 @@ export const register = async (req, res) => {
             phone
         });
 
-        const token = generateToken(user._id);
+        const token = generateToken(user._id, user.role);
 
         res.status(201).json({
             success: true,
@@ -43,7 +43,8 @@ export const register = async (req, res) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                phone: user.phone
+                phone: user.phone,
+                role: user.role
             }
         });
     } catch (error) {
@@ -75,7 +76,7 @@ export const login = async (req, res) => {
             return res.status(401).json({ success: false, message: 'Invalid credentials' });
         }
 
-        const token = generateToken(user._id);
+        const token = generateToken(user._id, user.role);
 
         res.status(200).json({
             success: true,
@@ -84,7 +85,8 @@ export const login = async (req, res) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
-                phone: user.phone
+                phone: user.phone,
+                role: user.role
             }
         });
     } catch (error) {

@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import itineraryRoutes from './routes/itineraryRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
+import packageRoutes from './routes/packageRoutes.js';
 import { mockDestinations } from './utils/mockData.js';
 
 // Load environment variables
@@ -32,11 +34,11 @@ connectDB();
 
 import authRoutes from './routes/authRoutes.js';
 
-// ... (other imports stay the same)
-
 // API Routes
 app.use('/api/itineraries', itineraryRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/packages', packageRoutes);
 
 // Trending destinations endpoint
 app.get('/api/destinations/trending', (req, res) => {

@@ -18,6 +18,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
+  },
   savedItineraries: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Itinerary'

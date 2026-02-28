@@ -62,6 +62,7 @@ export default function MyPackagesPage() {
                     <nav className="navbar-nav">
                         <button onClick={() => router.push('/')} className="navbar-link">Home</button>
                         <button onClick={() => router.push('/destinations')} className="navbar-link">Destinations</button>
+                        <button onClick={() => router.push('/packages')} className="navbar-link">Packages</button>
 
                         <div className="profile-dropdown-container">
                             <button className="btn-primary" style={{ padding: '0.5rem 1.25rem' }}>

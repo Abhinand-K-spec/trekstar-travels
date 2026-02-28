@@ -13,6 +13,63 @@ const WHY = [
   { icon: '✈️', title: 'End-to-End Planning', desc: 'From flights to day activities, everything is planned so you just show up and enjoy.' },
 ];
 
+const moodBg: Record<string, string> = {
+  relaxed: '#d1fae5', adventure: '#ffedd5', culture: '#ede9fe', foodie: '#fce7f3'
+};
+const moodColor: Record<string, string> = {
+  relaxed: '#059669', adventure: '#ea580c', culture: '#7c3aed', foodie: '#db2777'
+};
+
+function FeaturedPackages({ onAuthNeeded, isAuthenticated }: { onAuthNeeded: () => void; isAuthenticated: boolean }) {
+  const router = useRouter();
+  const [pkgs, setPkgs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5050/api';
+    fetch(`${apiBase}/packages?limit=3`)
+      .then(r => r.json())
+      .then(d => { if (d.success) setPkgs((d.data || []).slice(0, 3)); })
+      .catch(() => { })
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <div className="grid-3">{[1, 2, 3].map(i => <div key={i} className="skeleton" style={{ height: 280 }} />)}</div>;
+  if (!pkgs.length) return <p style={{ color: 'var(--ink-soft)', textAlign: 'center', padding: '2rem' }}>No packages available yet.</p>;
+
+  return (
+    <div className="grid-3">
+      {pkgs.map(pkg => (
+        <div key={pkg._id} className="card-destination" style={{ display: 'flex', flexDirection: 'column', cursor: 'default' }}>
+          <div style={{ padding: '1.5rem', background: '#fff', flex: 1 }}>
+            <span style={{
+              display: 'inline-block', marginBottom: '0.6rem', padding: '2px 10px', borderRadius: 20, fontSize: '0.78rem', fontWeight: 700,
+              background: moodBg[pkg.travelMood] || '#f3f4f6', color: moodColor[pkg.travelMood] || '#6b7280', textTransform: 'capitalize'
+            }}>
+              {pkg.travelMood}
+            </span>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: '1.3rem', color: 'var(--navy)', marginBottom: '0.2rem' }}>{pkg.title}</h3>
+            <p style={{ color: 'var(--gold)', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.75rem' }}>
+              {pkg.destination?.city}, {pkg.destination?.country}
+            </p>
+            <p style={{
+              color: 'var(--ink-soft)', fontSize: '0.88rem', lineHeight: 1.6, marginBottom: '1rem',
+              display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'
+            }}>{pkg.description}</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+              <span style={{ color: 'var(--ink-soft)', fontSize: '0.82rem' }}>⏱ {pkg.duration} days</span>
+              <span style={{ color: 'var(--navy)', fontWeight: 700, fontSize: '1rem' }}>${pkg.price}<span style={{ fontSize: '0.75rem', fontWeight: 400 }}>/person</span></span>
+            </div>
+            <button onClick={() => isAuthenticated ? router.push('/packages') : onAuthNeeded()} className="btn-gold" style={{ width: '100%', justifyContent: 'center' }}>
+              {isAuthenticated ? 'View Package' : 'Sign In to Book'}
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function LandingPage() {
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuth();
@@ -38,6 +95,7 @@ export default function LandingPage() {
           <nav className="navbar-nav">
             <a href="/" className="navbar-link">Home</a>
             <button onClick={() => router.push('/destinations')} className="navbar-link">Destinations</button>
+            <button onClick={() => router.push('/packages')} className="navbar-link">Packages</button>
             {isAuthenticated ? (
               <div className="profile-dropdown-container">
                 <button className="btn-primary" style={{ padding: '0.5rem 1.25rem' }}>
@@ -142,6 +200,19 @@ export default function LandingPage() {
           </div>
         )}
       </main>
+
+      {/* Featured Packages */}
+      <section className="section" style={{ background: '#fff' }}>
+        <div className="section-header">
+          <div>
+            <span className="eyebrow">Admin Curated</span>
+            <h2 className="section-title">Featured Packages</h2>
+            <p className="section-subtitle">Ready-made trips crafted by our travel experts.</p>
+          </div>
+          <button onClick={() => router.push('/packages')} className="btn-ghost">View all packages</button>
+        </div>
+        <FeaturedPackages onAuthNeeded={() => setIsAuthModalOpen(true)} isAuthenticated={isAuthenticated} />
+      </section>
 
       {/* Why TrekStar */}
       <section className="why-section">
