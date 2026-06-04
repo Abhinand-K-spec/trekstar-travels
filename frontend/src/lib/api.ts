@@ -23,6 +23,7 @@ class ApiClient {
             const response = await fetch(`${this.baseUrl}${endpoint}`, {
                 headers: {
                     'Content-Type': 'application/json',
+                    'bypass-tunnel-reminder': 'true',
                     ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
                     ...options.headers,
                 },
@@ -107,6 +108,45 @@ class ApiClient {
 
     async getTrendingDestinations(): Promise<ApiResponse<Destination[]>> {
         return this.request<Destination[]>('/destinations/trending');
+    }
+
+    // ─── Visa Services ─────────────────────────────────────────────────────────
+
+    async applyForVisa(visaData: any): Promise<ApiResponse<any>> {
+        return this.request<any>('/visa/apply', {
+            method: 'POST',
+            body: JSON.stringify(visaData),
+        });
+    }
+
+    async getMyVisaApplications(): Promise<ApiResponse<any[]>> {
+        return this.request<any[]>('/visa/my-applications');
+    }
+
+    async getVisaApplication(id: string): Promise<ApiResponse<any>> {
+        return this.request<any>(`/visa/application/${id}`);
+    }
+
+    async evaluateVisa(evaluationData: any): Promise<ApiResponse<any>> {
+        return this.request<any>('/visa/evaluate', {
+            method: 'POST',
+            body: JSON.stringify(evaluationData),
+        });
+    }
+
+    async adminGetVisaApplications(params?: { status?: string; search?: string }): Promise<ApiResponse<any[]>> {
+        const queryParams = new URLSearchParams();
+        if (params?.status) queryParams.append('status', params.status);
+        if (params?.search) queryParams.append('search', params.search);
+        const queryStr = queryParams.toString() ? `?${queryParams.toString()}` : '';
+        return this.request<any[]>(`/visa/admin/applications${queryStr}`);
+    }
+
+    async adminUpdateVisaApplication(id: string, statusData: { status: string; timelineNote?: string }): Promise<ApiResponse<any>> {
+        return this.request<any>(`/visa/admin/applications/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(statusData),
+        });
     }
 
     // ─── Health check ──────────────────────────────────────────────────────────

@@ -72,6 +72,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { label: 'Packages', href: '/admin/packages', icon: '📦' },
         { label: 'Orders', href: '/admin/orders', icon: '🛒' },
         { label: 'Payments', href: '/admin/payments', icon: '💳' },
+        { label: 'Visa Apps', href: '/admin/visa', icon: '🛂' },
     ];
 
     const logout = () => {

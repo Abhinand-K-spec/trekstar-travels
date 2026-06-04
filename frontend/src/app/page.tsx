@@ -96,6 +96,7 @@ export default function LandingPage() {
             <a href="/" className="navbar-link">Home</a>
             <button onClick={() => router.push('/destinations')} className="navbar-link">Destinations</button>
             <button onClick={() => router.push('/packages')} className="navbar-link">Packages</button>
+            <button onClick={() => router.push('/visa')} className="navbar-link">Visa Services</button>
             {isAuthenticated ? (
               <div className="profile-dropdown-container">
                 <button className="btn-primary" style={{ padding: '0.5rem 1.25rem' }}>

@@ -54,6 +54,7 @@ export default function PackagesPage() {
                         <button onClick={() => router.push('/')} className="navbar-link">Home</button>
                         <button onClick={() => router.push('/destinations')} className="navbar-link">Destinations</button>
                         <button className="navbar-link" style={{ color: 'var(--gold)', fontWeight: 600 }}>Packages</button>
+                        <button onClick={() => router.push('/visa')} className="navbar-link">Visa Services</button>
                         {isAuthenticated ? (
                             <div className="profile-dropdown-container">
                                 <button className="btn-primary" style={{ padding: '0.5rem 1.25rem' }}>

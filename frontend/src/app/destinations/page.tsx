@@ -39,6 +39,7 @@ export default function DestinationsPage() {
                     <nav className="navbar-nav">
                         <button onClick={() => router.push('/')} className="navbar-link">Home</button>
                         <button onClick={() => router.push('/destinations')} className="navbar-link" style={{ color: 'var(--gold)', fontWeight: 600 }}>Destinations</button>
+                        <button onClick={() => router.push('/visa')} className="navbar-link">Visa Services</button>
                         <button onClick={() => router.push('/onboarding')} className="btn-primary">
                             Plan a Trip
                         </button>
