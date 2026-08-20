@@ -2,6 +2,9 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import mongoSanitize from 'express-mongo-sanitize';
 import itineraryRoutes from './routes/itineraryRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import packageRoutes from './routes/packageRoutes.js';
@@ -14,10 +17,52 @@ dotenv.config();
 // Initialize Express app
 const app = express();
 
+// Security Limiters
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per window
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        success: false,
+        message: 'Too many requests from this IP, please try again after 15 minutes'
+    }
+});
+
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 20, // Limit each IP to 20 requests per window for auth routes
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        success: false,
+        message: 'Too many authentication attempts, please try again after 15 minutes'
+    }
+});
+
 // Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(helmet());
+const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    process.env.FRONTEND_URL
+].filter(Boolean);
+
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
+}));
+app.use(mongoSanitize());
+
+// Body parser limits
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 // MongoDB connection
 const connectDB = async () => {
@@ -34,6 +79,12 @@ const connectDB = async () => {
 connectDB();
 
 import authRoutes from './routes/authRoutes.js';
+
+// Apply general API limiter
+app.use('/api', limiter);
+
+// Apply auth rate limiter
+app.use('/api/auth', authLimiter);
 
 // API Routes
 app.use('/api/itineraries', itineraryRoutes);

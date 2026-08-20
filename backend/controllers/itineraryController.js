@@ -4,6 +4,14 @@ import Activity from '../models/Activity.js';
 import pricingService from '../services/pricingService.js';
 import { generateMockHotels, generateMockActivities } from '../utils/mockData.js';
 
+// Helper to check if user has access to modify the itinerary
+const checkItineraryAccess = (itinerary, req) => {
+    if (!itinerary.user) return true; // Guest itinerary
+    if (!req.user) return false; // Authenticated user's itinerary but request is unauthenticated
+    if (req.user.role === 'admin') return true; // Admin has full access
+    return String(itinerary.user) === String(req.user._id);
+};
+
 // Create a new itinerary
 export const createItinerary = async (req, res) => {
     try {
@@ -150,11 +158,7 @@ export const updateItinerary = async (req, res) => {
         const { id } = req.params;
         const updates = req.body;
 
-        const itinerary = await Itinerary.findByIdAndUpdate(
-            id,
-            { ...updates, updatedAt: Date.now() },
-            { new: true, runValidators: true }
-        );
+        const itinerary = await Itinerary.findById(id);
 
         if (!itinerary) {
             return res.status(404).json({
@@ -162,6 +166,17 @@ export const updateItinerary = async (req, res) => {
                 message: 'Itinerary not found'
             });
         }
+
+        if (!checkItineraryAccess(itinerary, req)) {
+            return res.status(403).json({
+                success: false,
+                message: 'Not authorized to edit this itinerary'
+            });
+        }
+
+        // Apply updates
+        Object.assign(itinerary, updates);
+        itinerary.updatedAt = Date.now();
 
         // Recalculate pricing if daily plans changed
         if (updates.dailyPlans) {
@@ -203,6 +218,13 @@ export const swapHotel = async (req, res) => {
             return res.status(404).json({
                 success: false,
                 message: 'Itinerary not found'
+            });
+        }
+
+        if (!checkItineraryAccess(itinerary, req)) {
+            return res.status(403).json({
+                success: false,
+                message: 'Not authorized to edit this itinerary'
             });
         }
 
@@ -260,6 +282,13 @@ export const addActivity = async (req, res) => {
             return res.status(404).json({
                 success: false,
                 message: 'Itinerary not found'
+            });
+        }
+
+        if (!checkItineraryAccess(itinerary, req)) {
+            return res.status(403).json({
+                success: false,
+                message: 'Not authorized to edit this itinerary'
             });
         }
 
@@ -322,6 +351,13 @@ export const removeActivity = async (req, res) => {
             return res.status(404).json({
                 success: false,
                 message: 'Itinerary not found'
+            });
+        }
+
+        if (!checkItineraryAccess(itinerary, req)) {
+            return res.status(403).json({
+                success: false,
+                message: 'Not authorized to edit this itinerary'
             });
         }
 

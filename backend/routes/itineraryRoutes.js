@@ -19,18 +19,18 @@ const router = express.Router();
 router.post('/', optionalProtect, createItinerary);
 router.get('/my-packages', protect, getMyItineraries);
 router.get('/:id', getItinerary);
-router.put('/:id', updateItinerary);
+router.put('/:id', optionalProtect, updateItinerary);
 
 // Hotel management
-router.post('/:id/swap-hotel', swapHotel);
+router.post('/:id/swap-hotel', optionalProtect, swapHotel);
 router.get('/hotels/available', getAvailableHotels);
 
 // Activity management
-router.post('/:id/add-activity', addActivity);
-router.post('/:id/remove-activity', removeActivity);
+router.post('/:id/add-activity', optionalProtect, addActivity);
+router.post('/:id/remove-activity', optionalProtect, removeActivity);
 router.get('/activities/available', getAvailableActivities);
 
 // Pricing
-router.get('/:id/pricing', getPricing);
+router.get('/:id/pricing', optionalProtect, getPricing);
 
 export default router;
