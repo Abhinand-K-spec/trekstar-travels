@@ -119,7 +119,12 @@ export default function PackagesPage() {
                 ) : (
                     <div className="grid-3">
                         {packages.map(pkg => (
-                            <div key={pkg._id} className="card-destination" style={{ display: 'flex', flexDirection: 'column', cursor: 'default' }}>
+                            <div 
+                                key={pkg._id} 
+                                className="card-destination cursor-pointer" 
+                                style={{ display: 'flex', flexDirection: 'column' }}
+                                onClick={() => router.push(`/packages/${pkg._id}`)}
+                            >
                                 <div style={{ padding: '1.5rem', flex: 1, background: '#fff' }}>
                                     {/* Mood badge */}
                                     <span style={{
@@ -171,11 +176,10 @@ export default function PackagesPage() {
                                     )}
 
                                     <button
-                                        onClick={() => isAuthenticated ? router.push('/onboarding') : setIsAuthModalOpen(true)}
                                         className="btn-gold"
                                         style={{ width: '100%', justifyContent: 'center' }}
                                     >
-                                        {isAuthenticated ? 'Book This Package' : 'Sign In to Book'}
+                                        View Journey Details
                                     </button>
                                 </div>
                             </div>

@@ -2180,3 +2180,232 @@ input[type='range'] {
     box-shadow: 0 0 10px var(--gold);
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   PREMIUM REDESIGN UTILITIES & ANIMATIONS
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Smooth scroll and snap configurations */
+.scroll-container-horizontal {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll-container-horizontal::-webkit-scrollbar {
+  display: none;
+}
+.scroll-item-horizontal {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* Glassmorphism utility */
+.glass-premium {
+  background: rgba(15, 28, 46, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.glass-premium-light {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+/* Text transitions */
+.editorial-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(2.5rem, 7vw, 5.5rem);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--cream);
+}
+
+/* Flight Path SVG Animation */
+@keyframes flightDash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes airplaneMove {
+  0% {
+    offset-distance: 0%;
+  }
+  100% {
+    offset-distance: 100%;
+  }
+}
+.flight-path {
+  stroke-dasharray: 8 6;
+  stroke-dashoffset: 1000;
+  animation: flightDash 25s linear infinite;
+}
+.airplane-icon {
+  offset-rotate: auto;
+  animation: airplaneMove 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Parallax zoom effect for hero */
+.zoom-parallax-container {
+  overflow: hidden;
+  position: relative;
+}
+.zoom-parallax-img {
+  transform: scale(1.15);
+  transition: transform 12s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.zoom-parallax-container:hover .zoom-parallax-img {
+  transform: scale(1.03);
+}
+
+/* Immersive background transition triggers */
+.transition-bg-story {
+  transition: background-image 1s cubic-bezier(0.4, 0, 0.2, 1), background-color 1s;
+}
+
+/* Sticky Timeline dots */
+.timeline-dot::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   AIRPORT CHECKPOINT BOOKING METAPHORS
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Airport signage typography */
+.airport-signage-label {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+/* Checkpoint wayfinding track line */
+.airport-route-track {
+  position: relative;
+  background: rgba(255, 255, 255, 0.08);
+}
+.airport-route-track::after {
+  content: '';
+  position: absolute;
+  background: var(--gold);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Vertical track connecting nodes */
+.airport-vertical-line {
+  width: 2px;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.15) 6px,
+    transparent 6px,
+    transparent 12px
+  );
+}
+
+/* Security scanner horizontal scan animation */
+@keyframes securityScan {
+  0% {
+    top: 0%;
+    opacity: 0.8;
+  }
+  50% {
+    top: 100%;
+    opacity: 0.8;
+  }
+  100% {
+    top: 0%;
+    opacity: 0.8;
+  }
+}
+.scanner-active-line {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  box-shadow: 0 0 8px var(--gold);
+  animation: securityScan 4s linear infinite;
+  pointer-events: none;
+}
+
+/* Passport stamp-like seal animation */
+@keyframes stampIn {
+  0% {
+    transform: scale(3) rotate(-35deg);
+    opacity: 0;
+  }
+  75% {
+    transform: scale(0.9) rotate(-12deg);
+    opacity: 0.95;
+  }
+  100% {
+    transform: scale(1) rotate(-15deg);
+    opacity: 1;
+  }
+}
+.stamp-immigration-clear {
+  border: 3px double #10b981;
+  color: #10b981;
+  font-family: monospace, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: 0.2em;
+  padding: 8px 16px;
+  text-transform: uppercase;
+  border-radius: 8px;
+  display: inline-block;
+  opacity: 0;
+}
+.stamp-immigration-clear.active {
+  animation: stampIn 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Faint background grid lines simulating terminal architectural floor map */
+.airport-terminal-blueprint {
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Responsiveness for booking page */
+.booking-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 4rem;
+}
+.booking-wayfinding {
+  display: block;
+  border-right: 1px solid rgba(255,255,255,0.05);
+  padding-right: 2rem;
+}
+.booking-mobile-progress {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .booking-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .booking-wayfinding {
+    display: none;
+  }
+  .booking-mobile-progress {
+    display: block;
+  }
+}
